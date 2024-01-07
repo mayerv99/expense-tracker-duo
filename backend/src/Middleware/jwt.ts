@@ -1,13 +1,5 @@
-import jwt, { VerifyErrors, JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-
-// type JWTRequest = {
-//   userId: string;
-// } & Request;
-
-interface DecodedToken extends JwtPayload {
-  userId?: string;
-}
 
 interface DecodedType {
   userId: string;
@@ -19,10 +11,7 @@ interface RequestWithUserId extends Request {
   userId?: string;
 }
 
-// interface RequestWithUserId extends ExpressRequest {
-//   userId?: string;
-// }
-
+// TODO: Secret key must be in .env file
 const secretKey = "carlos";
 
 export function generateToken(userId: string) {
@@ -40,28 +29,20 @@ export async function validateToken(
   if (!req.headers) {
     return;
   }
+  // Clean the token
   const token: string = req.headers["authorization"]?.replace(
     "Bearer ",
     ""
   ) as string;
 
   jwt.verify(token, secretKey, (err, decoded) => {
-    console.log("decoded: ", decoded);
-    console.log("err: ", err);
     if (err)
       return res.status(403).json({ message: "Failed to authenticate token" });
-    // if (req) {
-    //   req.userId = decoded;
-    //
+
     if (!decoded) {
       return;
     }
-
-    // {
-    //   userId: '14eb3a7e-5b28-4a36-9727-33978cf1b008',
-    //   iat: 1704592770,
-    //   exp: 1704610770
-
+    // Set the userId in the req body for the next function be able to use it
     const { userId } = decoded as DecodedType;
 
     req.body.userId = userId;

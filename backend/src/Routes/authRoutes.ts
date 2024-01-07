@@ -6,6 +6,7 @@ import { User } from "@prisma/client";
 
 const router = express.Router();
 
+// Register function
 router.post("/register", async (req, res) => {
   const {
     //name
@@ -34,6 +35,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// Login function
 router.post("/", async (req, res, next) => {
   const { email, password } = req.body;
   const user = await validateUser(email, password);
@@ -41,6 +43,7 @@ router.post("/", async (req, res, next) => {
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
+
   const { id } = user;
 
   const token = generateToken(id);
