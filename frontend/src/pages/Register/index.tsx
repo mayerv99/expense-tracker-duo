@@ -1,36 +1,23 @@
 import { Container, ContainerHeader, ContainerInputs } from "./styled";
 import axios from "axios";
 import { useRef } from "react";
+import Auth from "../../domain/auth";
 
 export default function Register() {
   const refEmail = useRef(null);
   const refPassword = useRef(null);
 
+    
   const handleRegister = async () => {
+
+    const AuthDomain = new Auth("http://localhost:3000/user/me")
+
     const email = refEmail?.current?.value;
     const password = refPassword?.current?.value;
 
-    const response = await axios.post("http://localhost:3000/auth/register", {
-      email: email,
-      password: password,
-    });
+    const response = await AuthDomain.me(email, password)
 
-    const { data } = response;
-
-    await axios.post(
-      "http://localhost:3000/transactions",
-      {
-        name: "teste transaction",
-        amount: 320,
-        type: "income",
-        categoryId: 1,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${data.token}`,
-        },
-      }
-    );
+    console.log(response)
   };
 
   return (

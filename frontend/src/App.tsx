@@ -4,6 +4,7 @@ import { GlobalStyle } from "./styles/HomeStyle/global";
 import { defaultTheme } from "./styles/HomeStyle/theme";
 import axios from "axios";
 import RoutesProvider from "./routes";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   const token =
@@ -45,7 +46,9 @@ function App() {
     <ThemeProvider theme={defaultTheme}>
       <GlobalStyle />
       <Container>
-        <RoutesProvider />
+        <AuthProvider>
+          <RoutesProvider />
+        </AuthProvider>
       </Container>
     </ThemeProvider>
   );
